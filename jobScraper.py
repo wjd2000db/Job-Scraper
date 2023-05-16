@@ -9,4 +9,11 @@ if response.status_code != 200:
     print("Can't request website")
 else:
     soup = BeautifulSoup(response.text, "html.parser")
-    print(soup.find_all('title'))
+    jobs=soup.find_all('section',class_="jobs")
+    for job_section in jobs:
+        job_posts = job_section.find_all('li')
+        job_posts.pop(-1)                   # remove last class "view-all" 
+        for post in job_posts:
+            anchors = post.find_all('a')
+            anchor = anchors[1]
+            print(anchor['href'])
