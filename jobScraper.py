@@ -31,15 +31,16 @@ def get_page_count(keyword):
 
 def extract_indeed_jobs(keyword):
     pages = get_page_count(keyword)
+    results = []
     for page in range(pages):
-        base_url = "https://ca.indeed.com/jobs?q="
-        end_url = "&limit=50"
-        browser.get(f"{base_url}{keyword}{end_url}")
+        base_url = "https://ca.indeed.com/jobs"
+        end_url = f"{base_url}?q={keyword}&start={page*10}"
+        browser.get(end_url)
 
         if "Error" in browser.title:
             print("An error occurred while loading the page.")
         else:
-            results = []
+         
             soup = BeautifulSoup(browser.page_source, "html.parser")
             job_list = (soup.find("ul", class_="jobsearch-ResultsList"))
             jobs = job_list.find_all('li', recursive=False)
@@ -58,8 +59,5 @@ def extract_indeed_jobs(keyword):
                         'position': title
                     }
                     results.append(job_data)
-            for result in results:
-                print(result,"\n/////\n")
+    return results
 
-
-extract_indeed_jobs("python")
